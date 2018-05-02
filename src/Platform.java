@@ -12,7 +12,18 @@ public class Platform {
 	private double dx = 0;
 	Image plat;
 	URL url;
+	float frame = 0;
+
 	
+	
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
 	public int getHeight() {
 		return height;
 	}
@@ -27,11 +38,20 @@ public class Platform {
 		plat = Pictures.platform;
 	}
 	
+	
+	public Image getPlat() {
+		return plat;
+	}
+
+	public void setPlat(Image plat) {
+		this.plat = plat;
+	}
+
 	public Platform(int i, int j){
 		x = i;
 		y = j;
 		width = 120;
-		height = 30;
+		height = 40;
 		dx = -1;
 	}
 
@@ -53,7 +73,7 @@ public class Platform {
 	}
 
 	public void update(Game game, Ball b) {
-		x += dx;
+		x += -Game.level;
 	 checkForCollision(b);
 	 	if( x < 0 - width){
 	 		Random r = new Random();
@@ -82,6 +102,7 @@ public class Platform {
 		g.setColor(Color.black);
 		g.fillRect(x, y, width, height);
 		g.drawImage(plat, x, y, Pictures.game);
+		g.drawImage(plat, x, y, x + width, y + height, 0, 40*(int) frame, 120, 40*(int) frame + 40, Pictures.game);
 	}
 
 }

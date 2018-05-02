@@ -1,4 +1,5 @@
 import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -9,17 +10,25 @@ import java.net.URL;
 import java.util.Random;
 
 public class Game extends Applet implements Runnable, KeyListener {
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	Ball b1;
 	Platform p[] = new Platform[7];
-	Item item[] = new Item[3];
-	private int score;
+	Item item[] = new Item[5];
+	private int score, levelcheck = 0;
+	static int level = 1;
 	double forestX = 0;
 	double forestDx = .3;
 	Image forest;
+	Image platform;
 	URL url;
-
+	float frame = 0;
+	AudioClip backgroundm;
+	boolean gameOver = false;
+	
+	
+	
 	public int getScore() {
 		return score;
 	}
@@ -42,16 +51,21 @@ public class Game extends Applet implements Runnable, KeyListener {
 			// TODO: handle exception
 		}
 		forest = getImage(url, "image/Forest.png");
-		
+		backgroundm = getAudioClip(url, "music/music1.wav");
+		platform = getImage(url, "image/platform 1.png");
+		backgroundm.loop();
 	}
-
+	
+	
+	
 	@Override
 	public void start() {
+		
 		score = 1;
 		b1 = new Ball();
 		for (int i = 0; i < p.length; i++) {
 			Random r = new Random();
-			p[i] = new Platform(getWidth() + i * 200, getHeight() - 40 - r.nextInt(300));
+			p[i] = new Platform(i * 120,300);
 		}
 
 		for (int i = 0; i < item.length; i++) {
@@ -60,56 +74,73 @@ public class Game extends Applet implements Runnable, KeyListener {
 
 			switch (r.nextInt(5)) {
 			case 0:
-				item[i] = new GravUp(getWidth() + 2000 * i);
+				item[i] = new GravUp(getWidth() + 1000 * i);
 				break;
 			case 1:
-				item[i] = new GravDown(getWidth() + 2000 * i);
+				item[i] = new GravDown(getWidth() + 1000 * i);
 				break;
 			case 2:
-				item[i] = new AgilUp(getWidth() + 2000 * i);
+				item[i] = new AgilUp(getWidth() + 1000 * i);
 				break;
 			case 3:
-				item[i] = new AgilDown(getWidth() + 2000 * i);
+				item[i] = new AgilDown(getWidth() + 1000 * i);
 				break;
 			case 4:
-				item[i] = new ScoreUp(getWidth() + 2000 * i, this);
+				item[i] = new ScoreUp(getWidth() + 1000 * i, this);
 				break;
 			}
 		}
 		Thread thread = new Thread(this);
 		thread.start();
 	}
-
+	
+	/*
+	public void stopMusic(AudioClip backgroundm){
+		backgroundm.stop();
+	}
+	*/
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		Random r = new Random();
 		while (true) {
+			
+			gameOver = b1.isGameOver();
+			
+			if(levelcheck > 100){
+				level++;
+				levelcheck = 0;
+			}
+			levelcheck++;
+			
 			if (forestX > getWidth() * -1) {
 				forestX -= forestDx;
 			} else {
 				forestX = 0;
 			}
+			if(!gameOver) {
 			score++;
-
+			}
+			
 			for (int i = 0; i < item.length; i++) {
 				if (item[i].isCreateNew()) {
 					item[i] = null;
 					switch (r.nextInt(5)) {
 					case 0:
-						item[i] = new GravUp(getWidth() + 10 * r.nextInt(500));
+						item[i] = new GravUp(getWidth() + 5 * r.nextInt(500));
 						break;
 					case 1:
-						item[i] = new GravDown(getWidth() + 10 * r.nextInt(500));
+						item[i] = new GravDown(getWidth() + 5 * r.nextInt(500));
 						break;
 					case 2:
-						item[i] = new AgilUp(getWidth() + 10 * r.nextInt(500));
+						item[i] = new AgilUp(getWidth() + 5 * r.nextInt(500));
 						break;
 					case 3:
-						item[i] = new AgilDown(getWidth() + 10 * r.nextInt(500));
+						item[i] = new AgilDown(getWidth() + 5 * r.nextInt(500));
 						break;
 					case 4:
-						item[i] = new ScoreUp(getWidth() + 10 * r.nextInt(500), this);
+						item[i] = new ScoreUp(getWidth() + 5 * r.nextInt(500), this);
 						break;
 					}
 					item[i].setCreateNew(false);
@@ -125,7 +156,7 @@ public class Game extends Applet implements Runnable, KeyListener {
 			}
 			repaint();
 			try {
-				Thread.sleep(17);
+				Thread.sleep(16);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -148,7 +179,7 @@ public class Game extends Applet implements Runnable, KeyListener {
 		// TODO Auto-generated method stub
 
 		if (i == null) {
-			i = createImage(1000, 1000);
+			i = createImage(this.getWidth(), this.getHeight());
 			doubleG = i.getGraphics();
 		}
 
@@ -160,7 +191,7 @@ public class Game extends Applet implements Runnable, KeyListener {
 
 		g.drawImage(i, 0, 0, this);
 	}
-
+	
 	@Override
 	public void paint(Graphics g) {
 		// TODO Auto-generated method stub
@@ -169,10 +200,20 @@ public class Game extends Applet implements Runnable, KeyListener {
 		g.drawImage(forest, (int) forestX, 0, this);
 		g.drawImage(forest, (int) forestX + getWidth(), 0, this);
 		
-		b1.paint(g);
+		int tester = (int)( frame + .1);
+			if (tester < 3)
+				frame += .1;
+			else
+				frame = 0;
+		
 		for (int i = 0; i < p.length; i++) {
-			p[i].paint(g);
+			
+		    g.drawImage(platform, p[i].getX(), p[i].getY(), p[i].getX() + p[i].getWidth(), p[i].getY() + p[i].getHeight(), 0, 40*(int) frame, 120, 40*(int) frame + 40, this);
 		}
+		
+		b1.paint(g);
+	
+		
 		for (int i = 0; i < item.length; i++) {
 			item[i].paint(g);
 		}

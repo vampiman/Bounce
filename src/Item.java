@@ -30,7 +30,7 @@ public class Item {
 		x = i;
 		dx = -2;
 		Random r = new Random();
-		y =r.nextInt(300) + radius;
+		y =r.nextInt(300) + 100 + radius;
 		radius = 10;
 	}
 	

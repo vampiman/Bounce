@@ -14,7 +14,7 @@ public class Pictures {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		platform = game.getImage(url, "image/platform 1.png");
+		platform = game.getImage(url, "image/platform 1.png ");
 		this.game = game;
 	}
 }
