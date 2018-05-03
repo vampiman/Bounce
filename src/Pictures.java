@@ -15,6 +15,5 @@ public class Pictures {
 			// TODO: handle exception
 		}
 		platform = game.getImage(url, "image/platform 1.png ");
-		this.game = game;
 	}
 }

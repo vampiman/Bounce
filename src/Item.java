@@ -47,7 +47,6 @@ public class Item {
 		int ballY = b.getY();
 		int ballX = b.getX();
 		int ballR = b.getRadius();
-		double ballDy = b.getDy();
 	
 		double a = x - ballX;
 		double bb = y - ballY;

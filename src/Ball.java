@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 
 public class Ball {
@@ -11,13 +10,17 @@ public class Ball {
 	private int radius = 20;
 	private double gravity = 15;
 	//private double energyloss = 1;
-	private double xFriction = .9;
+	//private double xFriction = .9;
 	private double gameDy = -75;
 	private double dt = .2;
 	private int agility = 3;
 	private int maxSpeed = 20;
 	private boolean gameOver = false;
 
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
+	}
+	
 	public boolean isGameOver() {
 		return gameOver;
 	}
@@ -98,11 +101,6 @@ public class Ball {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Ball(int i, int j) {
-		// TODO Auto-generated constructor stub
-		x = i;
-		y = j;
-	}
 
 	public void moveRight() {
 		if (dx + agility < maxSpeed) {
@@ -154,16 +152,7 @@ public class Ball {
 	public void paint(Graphics g) {
 		g.setColor(Color.cyan);
 		g.fillOval(x - radius, y - radius, radius * 2, radius * 2);
-		if(gameOver){
-			Font font = new Font("Comic Sans", Font.BOLD, 32);
-			g.setFont(font);
-			g.setColor(Color.BLACK);
-			g.drawString("GAME OVER", 302, 302);
-			g.setColor(new Color(197, 226, 255));
-			g.drawString("GAME OVER", 300, 300);
-			g.setColor(Color.BLACK);
-			g.drawString("Try again", 328, 352);
-		}
+		
 	
 	}
 }
